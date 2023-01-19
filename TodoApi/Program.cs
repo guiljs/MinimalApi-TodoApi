@@ -12,8 +12,7 @@ app.MapGet("/", () => Results.Ok("Ok ok"));
 
 todoItems.MapGet("/", async (TodoDb db) => await db.Todos.ToListAsync());
 
-todoItems.MapGet("/complete", async (TodoDb db) =>
-    await db.Todos.Where(x => x.IsComplete).ToListAsync());
+todoItems.MapGet("/complete", GetCompleteTodos);
 
 todoItems.MapGet("/complete2", async (TodoDb db) =>
 {
@@ -62,5 +61,10 @@ todoItems.MapDelete("/{id}", async (TodoDb db, int id) =>
 
     return Results.NotFound();
 });
+
+static async Task<IResult> GetCompleteTodos(TodoDb db)
+{
+    return TypedResults.Ok(await db.Todos.Where(x => x.IsComplete).ToListAsync());
+}
 
 app.Run();
